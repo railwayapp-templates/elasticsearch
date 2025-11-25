@@ -1,13 +1,44 @@
-bootstrap.memory_lock: "true"
-discovery.type: "single-node"
-node.name: "elasticsearch"
+# Cluster Configuration
+cluster.name: "${CLUSTER_NAME:elasticsearch-cluster}"
+node.name: "${NODE_NAME:node-1}"
+
+# Node roles (all roles enabled by default)
+node.roles: "${NODE_ROLES:master,data,ingest}"
+
+# Discovery settings for multi-node cluster
+# For single-node: set DISCOVERY_TYPE=single-node (default)
+# For multi-node: set DISCOVERY_TYPE=multi-node and configure seed hosts
+discovery.type: "${DISCOVERY_TYPE:single-node}"
+discovery.seed_hosts: "${DISCOVERY_SEED_HOSTS:}"
+cluster.initial_master_nodes: "${INITIAL_MASTER_NODES:}"
+
+# Network settings
+network.host: 0.0.0.0
+http.port: "${HTTP_PORT:9200}"
+transport.port: "${TRANSPORT_PORT:9300}"
+
+# Path settings
 path.data: "/esdata"
+
+# Memory settings
+bootstrap.memory_lock: "true"
+
+# Disable mmap - required for cloud environments without vm.max_map_count access
+node.store.allow_mmap: "false"
+
+# Security settings
 xpack.security.enabled: "true"
 xpack.security.enrollment.enabled: "false"
-node.store.allow_mmap: "false" # disable nmap
-network.host: 0.0.0.0
 
-# Enable anonymous access
+# Transport layer security for inter-node communication
+# For production multi-node clusters, enable TLS:
+# xpack.security.transport.ssl.enabled: true
+# xpack.security.transport.ssl.verification_mode: certificate
+# xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+# xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+xpack.security.transport.ssl.enabled: "${TRANSPORT_SSL_ENABLED:false}"
+
+# Enable anonymous access for health checks
 xpack.security.authc:
   anonymous:
     username: anonymous_user
