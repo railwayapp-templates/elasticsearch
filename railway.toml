@@ -1,0 +1,6 @@
+[deploy]
+startCommand = "/usr/local/bin/entrypoint-new.sh"
+
+[[mounts]]
+source = "esdata"
+destination = "/esdata"
